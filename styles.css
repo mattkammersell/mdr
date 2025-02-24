@@ -70,17 +70,18 @@ body {
 }
 
 .top-progress-bar {
-  width: 90%;
+  width: 80%;
   height: clamp(40px, 6vw, 60px);
   background-color: #000;
   border: 2px solid #0f0;
+  margin-left: 15px;
   position: relative;
   overflow: visible;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  margin: 0 1%;
+  margin: 0 auto;
 }
 
 .top-progress-bar::before {
@@ -106,7 +107,7 @@ body {
 .top-progress-text {
   position: absolute;
   top: 0;
-  right: 1vw;
+  right: 2vw;
   width: clamp(40px, 5vw, 60px);
   height: 100%;
   font-size: clamp(14px, 2vw, 18px);
@@ -126,7 +127,7 @@ body {
 
 .bottom-section {
   width: 100%;
-  flex: 0 0 25%; /* Fixed 25% height, no shrinking */
+  flex: -5 0 25%; /* Fixed 25% height, no shrinking */
   background-color: #000;
   display: flex;
   justify-content: center;
