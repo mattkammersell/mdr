@@ -6,24 +6,32 @@ const gridContainer = document.getElementById('grid-stub');
 
 function createGrid() {
   const width = gridContainer.offsetWidth;
-  const height = width / 2; // 10:20 ratio
-  const cellSize = width / 20;
+  const height = gridContainer.offsetHeight; // Use CSS-driven height
+  const maxRows = 10;
+  const maxCols = 20;
 
-  gridContainer.style.height = `${height}px`;
+  // Calculate cell size based on container dimensions
+  const cellHeight = height / maxRows;
+  const cellWidth = width / maxCols;
+  const cellSize = Math.min(cellHeight, cellWidth);
+
+  // Firefox adjustment
+  const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+  const adjustedCellSize = isFirefox ? cellSize * 0.95 : cellSize;
+
   gridContainer.innerHTML = '';
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < maxRows; i++) {
     const row = document.createElement('div');
     row.classList.add('grid-row');
     gridContainer.appendChild(row);
 
-    for (let j = 0; j < 20; j++) {
+    for (let j = 0; j < maxCols; j++) {
       const cell = document.createElement('div');
       cell.classList.add('grid-cell');
-      cell.style.width = `${cellSize}px`;
-      cell.style.height = `${cellSize}px`;
+      // Let CSS handle width/height via flex and aspect-ratio
       cell.textContent = Math.floor(Math.random() * 10).toString();
-      const baseFontSize = (cellSize / 2) / 2.5;
+      const baseFontSize = Math.max(adjustedCellSize / 2.5, 10);
       cell.style.fontSize = `${baseFontSize}px`;
       cell.dataset.row = i;
       cell.dataset.col = j;
@@ -35,10 +43,7 @@ function createGrid() {
           hoveredCell = cell;
           const affectedCells = getJaggedAffectedCells(cell);
 
-          affectedCells.forEach(({
-            cell: c,
-            distance
-          }) => {
+          affectedCells.forEach(({ cell: c, distance }) => {
             let scale = distance === 0 ? 2.5 : distance === 1 ? 1.5 : 0.8;
             c.style.transform = `scale(${scale})`;
             c.style.transition = 'transform 0.2s ease-in-out, color 0.2s ease-in-out';
@@ -58,14 +63,10 @@ function createGrid() {
       cell.addEventListener('dragstart', (e) => {
         const affectedCells = getJaggedAffectedCells(hoveredCell);
         if (affectedCells.some(ac => ac.cell === cell)) {
-          draggedNumbers = affectedCells.map(({
-            cell: c
-          }) => c.textContent);
+          draggedNumbers = affectedCells.map(({ cell: c }) => c.textContent);
           e.dataTransfer.setData('text/plain', draggedNumbers.join(','));
 
-          affectedCells.forEach(({
-            cell: c
-          }) => {
+          affectedCells.forEach(({ cell: c }) => {
             c.classList.add('dragging');
             c.style.opacity = '0.5';
           });
@@ -74,10 +75,7 @@ function createGrid() {
           dragGroup.style.position = 'absolute';
           dragGroup.style.top = '-9999px';
           const centerRect = hoveredCell.getBoundingClientRect();
-          affectedCells.forEach(({
-            cell: c,
-            distance
-          }) => {
+          affectedCells.forEach(({ cell: c, distance }) => {
             const clone = c.cloneNode(true);
             clone.classList.add('drag-ghost');
             clone.classList.remove('dragging');
@@ -89,8 +87,8 @@ function createGrid() {
             clone.style.transform = `scale(${scale})`;
             clone.style.transition = 'none';
             clone.style.opacity = '0.7';
-            clone.style.width = `${cellSize}px`;
-            clone.style.height = `${cellSize}px`;
+            clone.style.width = `${adjustedCellSize}px`;
+            clone.style.height = `${adjustedCellSize}px`;
             clone.style.fontSize = `${baseFontSize}px`;
             clone.style.color = '#0f0';
             dragGroup.appendChild(clone);
@@ -120,12 +118,10 @@ function createGrid() {
     box.addEventListener('dragover', (e) => {
       e.preventDefault();
       box.classList.add('dragover');
-      box.style.borderColor = '#0f0';
     });
 
     box.addEventListener('dragleave', () => {
       box.classList.remove('dragover');
-      box.style.borderColor = '#0f0';
     });
 
     box.addEventListener('drop', (e) => {
@@ -151,13 +147,9 @@ function createGrid() {
       topProgressText.textContent = `${Math.round(avgProgress)}%`;
       topProgressBar.dataset.progress = Math.round(avgProgress).toString();
 
-      box.style.borderColor = '#0f0';
-
       if (hoveredCell) {
         const affectedCells = getJaggedAffectedCells(hoveredCell);
-        affectedCells.forEach(({
-          cell: c
-        }) => {
+        affectedCells.forEach(({ cell: c }) => {
           c.textContent = Math.floor(Math.random() * 10).toString();
         });
       }
@@ -171,10 +163,7 @@ function getJaggedAffectedCells(centerCell) {
   const cells = document.querySelectorAll('.grid-cell');
   const centerRow = parseInt(centerCell.dataset.row);
   const centerCol = parseInt(centerCell.dataset.col);
-  const affected = [{
-    cell: centerCell,
-    distance: 0
-  }];
+  const affected = [{ cell: centerCell, distance: 0 }];
 
   cells.forEach(cell => {
     if (cell === centerCell) return;
@@ -187,10 +176,7 @@ function getJaggedAffectedCells(centerCell) {
       const chance = Math.random();
       const isClose = rowDiff <= 1 && colDiff <= 1;
       if (isClose || (distance === 1 && chance > 0.4) || (distance === 2 && chance > 0.7)) {
-        affected.push({
-          cell,
-          distance: Math.min(distance, 2)
-        });
+        affected.push({ cell, distance: Math.min(distance, 2) });
       }
     }
   });

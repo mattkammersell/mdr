@@ -1,65 +1,60 @@
-/* Place this in styles.css, replacing the existing content */
 body {
   font-family: monospace;
   margin: 0;
   padding: 0;
   background-color: #000;
   color: #0f0;
-  overflow: hidden;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  padding: 1%;
   box-sizing: border-box;
 }
 
 .top-section {
   width: 96%;
-  height: 80px;
-  margin: 0 auto;
-  margin-top: 20px;
+  min-height: 80px;
+  margin: 0 auto 1%;
   background-color: #000;
-  margin-bottom: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  flex-shrink: 0; /* Don’t shrink */
 }
 
 .grid-section {
   width: 100%;
-  flex-grow: 1;
+  flex: 1 1 60%; /* Grow, but cap at 60% */
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden; /* Contain grid */
 }
 
 #grid-stub {
   width: 100%;
-  max-height: 100vh;
+  height: 100%; /* Fill parent */
   display: flex;
   flex-direction: column;
-  border: none;
-  outline: none;
-  box-shadow: none;
 }
 
 .grid-row {
+  flex: 1; /* Equal height for rows */
   display: flex;
-  height: 100%;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  margin: 0;
-  padding: 0;
-  background: transparent !important;
+  width: 100%;
 }
 
 .grid-cell {
+  flex: 1; /* Equal width */
+  aspect-ratio: 1 / 1; /* Square cells */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,8 +70,8 @@ body {
 }
 
 .top-progress-bar {
-  width: 91%;
-  height: 60px;
+  width: 90%;
+  height: clamp(40px, 6vw, 60px);
   background-color: #000;
   border: 2px solid #0f0;
   position: relative;
@@ -85,7 +80,7 @@ body {
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  margin: 0 10px;
+  margin: 0 1%;
 }
 
 .top-progress-bar::before {
@@ -101,9 +96,8 @@ body {
 }
 
 .top-progress-label {
-  position: relative;
-  padding-left: 10px;
-  font-size: 18px;
+  padding-left: 1vw;
+  font-size: clamp(14px, 2vw, 18px);
   color: #0f0;
   font-weight: bold;
   z-index: 2;
@@ -112,10 +106,10 @@ body {
 .top-progress-text {
   position: absolute;
   top: 0;
-  right: 33px;
-  width: 60px;
-  height: 60px;
-  font-size: 18px;
+  right: 1vw;
+  width: clamp(40px, 5vw, 60px);
+  height: 100%;
+  font-size: clamp(14px, 2vw, 18px);
   color: #0f0;
   font-weight: bold;
   z-index: 2;
@@ -125,57 +119,42 @@ body {
 }
 
 .top-progress-logo {
-  height: 110px;
-  margin-left: -33px;
+  height: clamp(80px, 15vw, 110px);
+  margin-left: -1vw;
   z-index: 3;
-}
-
-.top-progress-bar[data-progress="0"] .top-progress-text {
-  color: #0f0 !important;
-}
-
-.top-progress-bar[data-progress]:not([data-progress="0"]) .top-progress-text {
-  color: #000 !important;
-}
-
-.grid-cell.dragging {
-  color: #000 !important;
-}
-
-.drag-ghost,
-.drag-ghost * {
-  color: #0f0 !important;
 }
 
 .bottom-section {
   width: 100%;
-  height: 20%;
+  flex: 0 0 25%; /* Fixed 25% height, no shrinking */
   background-color: #000;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 10px 0;
+  padding: 1% 0;
   z-index: 3;
 }
 
 .box-container {
-  width: 80%;
+  width: 90%;
   display: flex;
   justify-content: space-between;
   background-color: #000;
   overflow: visible;
   position: relative;
   z-index: 2;
+  flex-wrap: wrap;
+  gap: 1vw;
 }
 
 .box {
-  width: 18%;
-  height: 100%;
+  width: clamp(15%, 18%, 20%);
+  height: auto;
   background-color: #000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 1vw;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -183,16 +162,16 @@ body {
 
 .number-box {
   width: 100%;
-  height: 40px;
+  height: clamp(30px, 4vw, 40px);
   background-color: #000;
   border: 2px solid #0f0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: clamp(14px, 2vw, 18px);
   font-weight: bold;
   color: #0f0;
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
   box-sizing: border-box;
   position: relative;
   overflow: visible;
@@ -204,7 +183,7 @@ body {
   position: absolute;
   top: 0;
   width: 50%;
-  height: 20px;
+  height: clamp(15px, 2vw, 20px);
   background-color: #0f0;
   transform-origin: top center;
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, top 0.3s ease-in-out, left 0.3s ease-in-out, right 0.3s ease-in-out;
@@ -219,21 +198,20 @@ body {
 
 .number-box::after {
   transform: rotate(-180deg);
-  /* Change initial rotation */
 }
 
 .box.dragover .number-box::before {
   transform: rotate(65deg);
   opacity: 1;
-  top: -30px;
-  left: calc(-20% - 5px);
+  top: -2vw;
+  left: calc(-20% - 0.5vw);
 }
 
 .box.dragover .number-box::after {
   transform: rotate(-65deg);
   opacity: 1;
-  top: -30px;
-  right: calc(-20% - 5px);
+  top: -2vw;
+  right: calc(-20% - 0.5vw);
 }
 
 .box.dragover .number-box {
@@ -244,13 +222,11 @@ body {
 
 .progress-bar {
   width: 100%;
-  height: 40px;
+  height: clamp(30px, 4vw, 40px);
   background-color: #000;
   border: 2px solid #0f0;
-  /* Restore border */
   position: relative;
-  padding-left: 10px;
-  /* Restore left alignment */
+  padding-left: 1vw;
   box-sizing: border-box;
   overflow: visible;
 }
@@ -260,7 +236,6 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  /* Restore left start */
   width: var(--progress-width, 0%);
   height: 100%;
   background-color: #0f0;
@@ -271,24 +246,48 @@ body {
 .progress-text {
   position: absolute;
   top: 0;
-  left: 10px;
-  /* Left-aligned text */
-  width: calc(100% - 10px);
-  height: 40px;
-  font-size: 16px;
+  left: 1vw;
+  width: calc(100% - 1vw);
+  height: 100%;
+  font-size: clamp(12px, 1.5vw, 16px);
   color: #0f0;
   font-weight: bold;
   display: flex;
   justify-content: flex-start;
-  /* Left alignment */
   align-items: center;
   z-index: 2;
 }
 
+.top-progress-bar[data-progress="0"] .top-progress-text,
 .progress-bar[data-progress="0"] .progress-text {
   color: #0f0 !important;
 }
 
+.top-progress-bar[data-progress]:not([data-progress="0"]) .top-progress-text,
 .progress-bar[data-progress]:not([data-progress="0"]) .progress-text {
   color: #000 !important;
+}
+
+.grid-cell.dragging {
+  color: #000 !important;
+}
+
+.drag-ghost,
+.drag-ghost * {
+  color: #0f0 !important;
+}
+
+@media (max-width: 768px) {
+  .top-progress-bar {
+    width: 85%;
+  }
+  .box-container {
+    width: 95%;
+    flex-direction: column;
+    align-items: center;
+  }
+  .box {
+    width: 80%;
+    margin-bottom: 2vw;
+  }
 }
