@@ -182,43 +182,38 @@ body {
 .number-box::after {
   content: '';
   position: absolute;
-  top: 0;
-  width: 50%;
+  top: 10px;
+  width: 56%;
   height: clamp(15px, 2vw, 20px);
-  background-color: #0f0;
-  transform-origin: top center;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, top 0.3s ease-in-out, left 0.3s ease-in-out, right 0.3s ease-in-out;
-  opacity: 0;
-  z-index: 1;
+  background-color: #000; /* Black inside */
+  border: 4px solid #0f0; /* Green border */
+  transition: transform 0.13s ease-in-out; /* Match your example */
+  z-index: -1; /* Behind the box */
 }
 
 .number-box::before {
   left: 0;
-  transform: rotate(180deg);
+  transform-origin: top left;
+  transform: rotate(0deg); /* Closed by default */
 }
 
 .number-box::after {
-  transform: rotate(-180deg);
+  right: 0;
+  transform-origin: top right;
+  transform: rotate(0deg); /* Closed by default */
 }
 
 .box.dragover .number-box::before {
-  transform: rotate(65deg);
-  opacity: 1;
-  top: -2vw;
-  left: calc(-20% - 0.5vw);
+  transform: rotate(-115deg); /* Open left flap */
 }
 
 .box.dragover .number-box::after {
-  transform: rotate(-65deg);
-  opacity: 1;
-  top: -2vw;
-  right: calc(-20% - 0.5vw);
+  transform: rotate(115deg); /* Open right flap */
 }
 
 .box.dragover .number-box {
   background-color: #0f0;
   color: #000;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 .progress-bar {
