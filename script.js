@@ -48,8 +48,12 @@ function createGrid() {
       cell.addEventListener('touchstart', (e) => {
         console.log('Touch started on cell:', cell.textContent);
         handleTouchStart(e, cell);
-      }, { passive: false });
-      cell.addEventListener('touchmove', (e) => handleTouchMove(e, cell), { passive: false });
+      }, {
+        passive: false
+      });
+      cell.addEventListener('touchmove', (e) => handleTouchMove(e, cell), {
+        passive: false
+      });
       cell.addEventListener('touchend', (e) => handleTouchEnd(e, cell));
     }
   }
@@ -80,7 +84,10 @@ function handleHover(cell) {
     hoveredCell = cell;
     const affectedCells = getJaggedAffectedCells(cell);
 
-    affectedCells.forEach(({ cell: c, distance }) => {
+    affectedCells.forEach(({
+      cell: c,
+      distance
+    }) => {
       let scale = distance === 0 ? 2.5 : distance === 1 ? 1.5 : 0.8;
       c.style.transform = `scale(${scale})`;
       c.style.transition = 'transform 0.2s ease-in-out, color 0.2s ease-in-out';
@@ -100,11 +107,15 @@ function handleHoverOut(cell) {
 function handleDragStart(e, cell) {
   const affectedCells = getJaggedAffectedCells(hoveredCell);
   if (affectedCells.some(ac => ac.cell === cell)) {
-    draggedNumbers = affectedCells.map(({ cell: c }) => c.textContent);
+    draggedNumbers = affectedCells.map(({
+      cell: c
+    }) => c.textContent);
     e.dataTransfer.setData('text/plain', draggedNumbers.join(','));
     console.log('Dragging numbers:', draggedNumbers);
 
-    affectedCells.forEach(({ cell: c }) => {
+    affectedCells.forEach(({
+      cell: c
+    }) => {
       c.classList.add('dragging');
       c.style.opacity = '0.5';
     });
@@ -130,10 +141,14 @@ function handleTouchStart(e, cell) {
   if (!draggedNumbers) {
     hoveredCell = cell;
     const affectedCells = getJaggedAffectedCells(cell);
-    draggedNumbers = affectedCells.map(({ cell: c }) => c.textContent);
+    draggedNumbers = affectedCells.map(({
+      cell: c
+    }) => c.textContent);
     console.log('Touch dragging numbers:', draggedNumbers);
 
-    affectedCells.forEach(({ cell: c }) => {
+    affectedCells.forEach(({
+      cell: c
+    }) => {
       c.classList.add('dragging');
       c.style.opacity = '0.5';
     });
@@ -154,7 +169,7 @@ function handleTouchMove(e, cell) {
     document.querySelectorAll('.box').forEach(box => {
       const rect = box.getBoundingClientRect();
       if (touch.pageX >= rect.left && touch.pageX <= rect.right &&
-          touch.pageY >= rect.top && touch.pageY <= rect.bottom) {
+        touch.pageY >= rect.top && touch.pageY <= rect.bottom) {
         box.classList.add('dragover');
       } else {
         box.classList.remove('dragover');
@@ -169,7 +184,7 @@ function handleTouchEnd(e, cell) {
     const dropTarget = Array.from(document.querySelectorAll('.box')).find(box => {
       const rect = box.getBoundingClientRect();
       return touch.pageX >= rect.left && touch.pageX <= rect.right &&
-             touch.pageY >= rect.top && touch.pageY <= rect.bottom;
+        touch.pageY >= rect.top && touch.pageY <= rect.bottom;
     });
 
     if (dropTarget) {
@@ -195,7 +210,10 @@ function createDragGhost(affectedCells, centerCell) {
   const centerRect = centerCell.getBoundingClientRect();
   const cellSize = centerCell.offsetWidth;
 
-  affectedCells.forEach(({ cell: c, distance }) => {
+  affectedCells.forEach(({
+    cell: c,
+    distance
+  }) => {
     const clone = c.cloneNode(true);
     clone.classList.add('drag-ghost');
     clone.classList.remove('dragging');
@@ -249,12 +267,30 @@ function handleDrop(e, box, progress, numbers) {
 
   if (hoveredCell) {
     const affectedCells = getJaggedAffectedCells(hoveredCell);
-    affectedCells.forEach(({ cell: c }) => {
+    affectedCells.forEach(({
+      cell: c
+    }) => {
       c.textContent = Math.floor(Math.random() * 10).toString();
       c.classList.remove('dragging');
       c.style.opacity = '1';
       c.style.transform = 'scale(1)';
     });
+
+    const oldHandleDrop = handleDrop;
+    handleDrop = function(e, box, progress, numbers) {
+      oldHandleDrop(e, box, progress, numbers);
+
+      // Check if all progress bars are at 100%
+      const allProgressBars = document.querySelectorAll('.progress-bar');
+      const allComplete = Array.from(allProgressBars).every(bar => {
+        return parseInt(bar.dataset.progress || '0') >= 100;
+      });
+
+      if (allComplete) {
+        setTimeout(showCompletionModal, 500);
+      }
+    };
+
   }
 
   resetGrid();
@@ -266,7 +302,10 @@ function getJaggedAffectedCells(centerCell) {
   const cells = document.querySelectorAll('.grid-cell');
   const centerRow = parseInt(centerCell.dataset.row);
   const centerCol = parseInt(centerCell.dataset.col);
-  const affected = [{ cell: centerCell, distance: 0 }];
+  const affected = [{
+    cell: centerCell,
+    distance: 0
+  }];
 
   cells.forEach(cell => {
     if (cell === centerCell) return;
@@ -279,7 +318,10 @@ function getJaggedAffectedCells(centerCell) {
       const chance = Math.random();
       const isClose = rowDiff <= 1 && colDiff <= 1;
       if (isClose || (distance === 1 && chance > 0.4) || (distance === 2 && chance > 0.7)) {
-        affected.push({ cell, distance: Math.min(distance, 2) });
+        affected.push({
+          cell,
+          distance: Math.min(distance, 2)
+        });
       }
     }
   });
@@ -321,3 +363,18 @@ function resetGrid() {
 
 window.addEventListener('resize', createGrid);
 createGrid();
+
+function showCompletionModal() {
+  const modal = document.getElementById('completion-modal');
+  if (!modal) {
+    console.error('Modal element not found');
+    return;
+  }
+  modal.style.display = 'flex';
+
+  // Trigger reflow
+  void modal.offsetWidth;
+
+  // Add show class for animation
+  modal.classList.add('show');
+}

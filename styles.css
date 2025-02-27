@@ -12,7 +12,7 @@ body {
 
 .container {
   width: 100%;
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 1%;
@@ -27,34 +27,34 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  flex-shrink: 0; /* Don’t shrink */
+  flex-shrink: 0;
 }
 
 .grid-section {
   width: 100%;
-  flex: 1 1 60%; /* Grow, but cap at 60% */
+  flex: 1 1 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden; /* Contain grid */
+  overflow: hidden;
 }
 
 #grid-stub {
   width: 100%;
-  height: 100%; /* Fill parent */
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .grid-row {
-  flex: 1; /* Equal height for rows */
+  flex: 1;
   display: flex;
   width: 100%;
 }
 
 .grid-cell {
-  flex: 1; /* Equal width */
-  aspect-ratio: 1 / 1; /* Square cells */
+  flex: 1;
+  aspect-ratio: 1 / 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,7 +127,7 @@ body {
 
 .bottom-section {
   width: 100%;
-  flex: -5 0 25%; /* Fixed 25% height, no shrinking */
+  flex: -5 0 25%;
   background-color: #000;
   display: flex;
   justify-content: center;
@@ -185,30 +185,30 @@ body {
   top: 10px;
   width: 56%;
   height: clamp(15px, 2vw, 20px);
-  background-color: #000; /* Black inside */
-  border: 4px solid #0f0; /* Green border */
-  transition: transform 0.13s ease-in-out; /* Match your example */
-  z-index: -1; /* Behind the box */
+  background-color: #000;
+  border: 4px solid #0f0;
+  transition: transform 0.13s ease-in-out;
+  z-index: -1;
 }
 
 .number-box::before {
   left: 0;
   transform-origin: top left;
-  transform: rotate(0deg); /* Closed by default */
+  transform: rotate(0deg);
 }
 
 .number-box::after {
   right: 0;
   transform-origin: top right;
-  transform: rotate(0deg); /* Closed by default */
+  transform: rotate(0deg);
 }
 
 .box.dragover .number-box::before {
-  transform: rotate(-115deg); /* Open left flap */
+  transform: rotate(-115deg);
 }
 
 .box.dragover .number-box::after {
-  transform: rotate(115deg); /* Open right flap */
+  transform: rotate(115deg);
 }
 
 .box.dragover .number-box {
@@ -260,30 +260,43 @@ body {
 }
 
 .top-progress-bar[data-progress]:not([data-progress="0"]) .top-progress-text,
-.progress-bar[data-progress]:not([data-progress="0"]) .progress-text {
-  color: #000 !important;
-}
+.progress-bar[data-progress]
 
-.grid-cell.dragging {
-  color: #000 !important;
-}
+.completion-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex; /* Always visible for testing */
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1; /* Always visible for testing */
+      transition: opacity 0.5s ease;
+    }
 
-.drag-ghost,
-.drag-ghost * {
-  color: #0f0 !important;
-}
+    .modal-content {
+      border: 10px solid #0f0;
+      padding: 40px;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
+      max-width: 800px;
+      height: 50%;
+      max-height: 400px;
+      transform: scale(1); /* Always scaled for testing */
+      transition: transform 0.5s ease;
+    }
 
-@media (max-width: 768px) {
-  .top-progress-bar {
-    width: 85%;
-  }
-  .box-container {
-    width: 95%;
-    flex-direction: column;
-    align-items: center;
-  }
-  .box {
-    width: 80%;
-    margin-bottom: 2vw;
-  }
-}
+    .complete-text {
+      font-family: monospace;
+      color: #0f0;
+      font-size: 5rem;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 10px;
+    }
